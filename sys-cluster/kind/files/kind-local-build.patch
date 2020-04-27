@@ -1,0 +1,20 @@
+--- a/Makefile	2020-04-26 23:56:00.877547420 -0600
++++ b/Makefile	2020-04-26 23:59:50.449488865 -0600
+@@ -39,7 +39,7 @@
+ 
+ # builds kind in a container, outputs to $(OUT_DIR)
+ kind:
+-	hack/go_container.sh go build -v -o /out/$(KIND_BINARY_NAME) -ldflags "$(LD_FLAGS)"
++	go build -v -o $(OUT_DIR)/$(KIND_BINARY_NAME) -ldflags "$(LD_FLAGS)"
+ 
+ # alias for building kind
+ build: kind
+@@ -51,7 +51,7 @@
+ 
+ # cleans the cache volume
+ clean-cache:
+-	docker volume rm -f kind-build-cache >/dev/null
++	rm -f kind-build-cache >/dev/null
+ 
+ # cleans the output directory
+ clean-output:
