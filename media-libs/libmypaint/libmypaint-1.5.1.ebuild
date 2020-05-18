@@ -28,7 +28,6 @@ CDEPEND="
 	introspection? ( >=dev-libs/gobject-introspection-1.32 )
 	openmp? ( sys-devel/gcc:*[openmp] )
 	nls? ( sys-devel/gettext )
-
 	"
 
 DEPEND="${CDEPEND}
@@ -43,6 +42,7 @@ RDEPEND="${CDEPEND}
 S="${WORKDIR}"/${MY_P}
 
 src_prepare() {
+	use gegl && epatch "${FILESDIR}/gegl-0.4.patch"
 	xdg_environment_reset
 	default
 	eautoreconf
