@@ -1,6 +1,5 @@
-# Copyright 2019 Gianni Bombelli <bombo82@giannibombelli.it>
-# Distributed under the terms of the GNU General Public License  as published by the Free Software Foundation;
-# either version 2 of the License, or (at your option) any later version.
+# Copyright 2020 William Diaz <william@wdiaz.org>
+# Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
@@ -22,7 +21,7 @@ IUSE="custom-jdk"
 RDEPEND="
 	!custom-jdk? ( virtual/jdk )"
 
-BUILD_NUMBER="201.7223.93"
+BUILD_NUMBER="201.7846.79"
 S="${WORKDIR}/WebStorm-${BUILD_NUMBER}"
 
 QA_PREBUILT="opt/${P}/*"

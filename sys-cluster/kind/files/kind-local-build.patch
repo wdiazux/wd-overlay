@@ -1,6 +1,6 @@
---- a/Makefile	2020-04-26 23:56:00.877547420 -0600
-+++ b/Makefile	2020-04-26 23:59:50.449488865 -0600
-@@ -39,7 +39,7 @@
+--- a/Makefile	2020-06-04 19:43:20.582191740 -0600
++++ b/Makefile	2020-06-04 19:42:27.698185701 -0600
+@@ -41,7 +41,7 @@
  
  # builds kind in a container, outputs to $(OUT_DIR)
  kind:
@@ -9,11 +9,11 @@
  
  # alias for building kind
  build: kind
-@@ -51,7 +51,7 @@
+@@ -53,7 +53,7 @@
  
  # cleans the cache volume
  clean-cache:
--	docker volume rm -f kind-build-cache >/dev/null
+-	$(DOCKER) volume rm -f kind-build-cache >/dev/null
 +	rm -f kind-build-cache >/dev/null
  
  # cleans the output directory

@@ -1,4 +1,4 @@
-# Copyright 2020 Gentoo Authors
+# Copyright 2020 William Diaz <william@wdiaz.org>
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -65,7 +65,8 @@ src_install(){
 	fperms +x "/opt/${PN}/resources/app/node_modules.asar.unpacked/vscode-ripgrep/bin/rg"
 	fperms +x "/opt/${PN}/resources/app/extensions/git/dist/askpass.sh"
 	dosym "/opt/${PN}/bin/code" "/usr/bin/${MY_PN}"
-	make_desktop_entry "${MY_PN}" "Visual Studio Code" "${MY_PN}" "Development;IDE"
+	make_desktop_entry "${MY_PN}" "Visual Studio Code" "${MY_PN}" "Utility;TextEditor;Development;IDE;"
+	make_desktop_entry "${MY_PN}-url-handler" "Visual Studio Code - URL Handler" "${MY_PN}" "Utility;TextEditor;Development;IDE;"
 	newicon "resources/app/resources/linux/code.png" ${MY_PN}.png
 	einstalldocs
 }
