@@ -9,9 +9,10 @@ DESCRIPTION="The smartest JavaScript IDE"
 HOMEPAGE="https://www.jetbrains.com/webstorm"
 SRC_URI="https://download.jetbrains.com/webstorm/WebStorm-${PV}.tar.gz -> ${P}.tar.gz"
 
-LICENSE="|| ( jetbrains_business-3.1 jetbrains_individual-4.1 jetbrains_education-3.2 jetbrains_classroom-4.1 jetbrains_open_source-4.1 )
-	Apache-1.1 Apache-2.0 BSD BSD-2 CC0-1.0 CDDL CDDL-1.1 CPL-1.0 GPL-2 GPL-2-with-classpath-exception GPL-3 ISC LGPL-2.1 LGPL-3 MIT MPL-1.1 OFL trilead-ssh yFiles yourkit W3C ZLIB
-"
+LICENSE="|| ( IDEA IDEA_Academic IDEA_Classroom IDEA_OpenSource IDEA_Personal )
+	Apache-1.1 Apache-2.0 BSD BSD-2 CC0-1.0 CDDL-1.1 CPL-0.5 CPL-1.0
+	EPL-1.0 EPL-2.0 GPL-2 GPL-2-with-classpath-exception GPL-3 ISC JDOM
+	LGPL-2.1+ LGPL-3 MIT MPL-1.0 MPL-1.1 OFL public-domain PSF-2 UoI-NCSA ZLIB"
 SLOT="0"
 VER="$(ver_cut 1-2)"
 KEYWORDS="~amd64 ~x86"
@@ -19,9 +20,10 @@ RESTRICT="bindist mirror splitdebug"
 IUSE="custom-jdk"
 
 RDEPEND="
+	dev-libs/libdbusmenu
 	!custom-jdk? ( virtual/jdk )"
 
-BUILD_NUMBER="201.8743.9"
+BUILD_NUMBER="202.6397.88"
 S="${WORKDIR}/WebStorm-${BUILD_NUMBER}"
 
 QA_PREBUILT="opt/${P}/*"
@@ -48,6 +50,9 @@ src_install() {
 
 	if use amd64; then
 		fperms 755 "${dir}"/bin/fsnotifier64
+	fi
+	if use arm; then
+		fperms 755 "${dir}"/bin/fsnotifier-arm
 	fi
 	if use x86; then
 		fperms 755 "${dir}"/bin/fsnotifier
