@@ -1,4 +1,4 @@
-# Copyright 1999-2019 William Diaz <william@wdiaz.org>
+# Copyright 1999-2020 William Diaz <william@wdiaz.org>
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -9,10 +9,10 @@ DESCRIPTION="A cross-platform IDE for C and C++"
 HOMEPAGE="https://www.jetbrains.com/clion"
 SRC_URI="https://download.jetbrains.com/cpp/CLion-${PV}.tar.gz -> ${P}.tar.gz"
 
-LICENSE="
-	|| ( jetbrains_business-3.1 jetbrains_individual-4.1 jetbrains_education-3.2 jetbrains_classroom-4.1 jetbrains_open_source-4.1 )
-	Apache-1.1 Apache-2.0 BSD BSD-2 CC0-1.0 CDDL CPL-1.0 GPL-2-with-classpath-exception GPL-3 ISC LGPL-2.1 LGPL-3 MIT MPL-1.1 OFL PSF-2 trilead-ssh UoI-NCSA yFiles yourkit
-"
+LICENSE="|| ( IDEA IDEA_Academic IDEA_Classroom IDEA_OpenSource IDEA_Personal )
+	Apache-1.1 Apache-2.0 BSD BSD-2 CC0-1.0 CDDL-1.1 CPL-0.5 CPL-1.0
+	EPL-1.0 EPL-2.0 GPL-2 GPL-2-with-classpath-exception GPL-3 ISC JDOM
+	LGPL-2.1+ LGPL-3 MIT MPL-1.0 MPL-1.1 OFL public-domain PSF-2 UoI-NCSA ZLIB"
 SLOT="0"
 VER="$(ver_cut 1-2)"
 KEYWORDS="~amd64 ~x86"
@@ -22,6 +22,7 @@ IUSE="custom-jdk"
 # RDEPENDS may cause false positives in repoman.
 # clion requires cmake and gdb at runtime to build and debug C/C++ projects
 RDEPEND="
+	dev-libs/libdbusmenu
 	dev-util/cmake
 	sys-devel/gdb
 	!custom-jdk? ( virtual/jdk )"
@@ -56,6 +57,9 @@ src_install() {
 
 	if use amd64; then
 		fperms 755 "${dir}"/bin/fsnotifier64
+	fi
+	if use arm; then
+		fperms 755 "${dir}"/bin/fsnotifier-arm
 	fi
 	if use x86; then
 		fperms 755 "${dir}"/bin/fsnotifier
