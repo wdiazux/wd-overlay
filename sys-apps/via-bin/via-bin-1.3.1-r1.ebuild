@@ -18,15 +18,17 @@ KEYWORDS="~amd64 ~x86"
 IUSE="appindicator"
 
 DEPEND="
-		x11-libs/libnotify
-		>=dev-libs/nss-3
-		>=x11-libs/libXScrnSaver-1
-		>=x11-libs/libXtst-1
-		x11-misc/xdg-utils
-		app-accessibility/at-spi2-core:2
-		sys-apps/util-linux
-		appindicator? ( dev-libs/libappindicator:3 )
-		app-crypt/libsecret"
+	x11-themes/hicolor-icon-theme
+	x11-libs/gtk+:3
+	x11-libs/libnotify
+	dev-libs/nss
+	x11-libs/libXScrnSaver
+	x11-libs/libXtst
+	x11-misc/xdg-utils
+	app-accessibility/at-spi2-core:2
+	sys-apps/util-linux
+	appindicator? ( dev-libs/libappindicator:3 )
+	app-crypt/libsecret"
 RDEPEND="${DEPEND}"
 BDEPEND=""
 
@@ -48,6 +50,7 @@ src_install() {
 	fperms +x /opt/VIA/via
 
 	domenu usr/share/applications/via.desktop
+	dosym /opt/VIA/via /usr/bin/via
 
 	insinto /usr/share/icons
 	doins -r usr/share/icons/.
