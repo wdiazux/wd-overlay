@@ -19,7 +19,7 @@ KEYWORDS="~amd64 ~x86"
 RESTRICT="bindist mirror splitdebug"
 IUSE="custom-jdk"
 
-BUILD_NUMBER="203.6682.168"
+BUILD_NUMBER="203.7148.57"
 S="${WORKDIR}/idea-IU-${BUILD_NUMBER}"
 
 RDEPEND="
