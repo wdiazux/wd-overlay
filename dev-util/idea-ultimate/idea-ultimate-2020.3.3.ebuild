@@ -1,4 +1,4 @@
-# Copyright 1999-2020 William Diaz <william@wdiaz.org>
+# Copyright 1999-2021 William Diaz <william@wdiaz.org>
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -19,7 +19,7 @@ KEYWORDS="~amd64 ~x86"
 RESTRICT="bindist mirror splitdebug"
 IUSE="custom-jdk"
 
-BUILD_NUMBER="203.7148.57"
+BUILD_NUMBER="203.7717.56"
 S="${WORKDIR}/idea-IU-${BUILD_NUMBER}"
 
 RDEPEND="

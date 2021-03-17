@@ -1,4 +1,4 @@
-# Copyright 1999-2020 William Diaz <william@wdiaz.org>
+# Copyright 1999-2021 William Diaz <william@wdiaz.org>
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7

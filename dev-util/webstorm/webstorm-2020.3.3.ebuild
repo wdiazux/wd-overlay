@@ -1,4 +1,4 @@
-# Copyright 2020 William Diaz <william@wdiaz.org>
+# Copyright 2021 William Diaz <william@wdiaz.org>
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -23,7 +23,7 @@ RDEPEND="
 	dev-libs/libdbusmenu
 	!custom-jdk? ( virtual/jdk )"
 
-BUILD_NUMBER="203.7148.54"
+BUILD_NUMBER="203.7717.59"
 S="${WORKDIR}/WebStorm-${BUILD_NUMBER}"
 
 QA_PREBUILT="opt/${P}/*"
