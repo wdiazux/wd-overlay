@@ -23,7 +23,7 @@ RDEPEND="
 	dev-libs/libdbusmenu
 	!custom-jdk? ( virtual/jdk )"
 
-BUILD_NUMBER="203.7717.59"
+BUILD_NUMBER="211.7142.46"
 S="${WORKDIR}/WebStorm-${BUILD_NUMBER}"
 
 QA_PREBUILT="opt/${P}/*"
