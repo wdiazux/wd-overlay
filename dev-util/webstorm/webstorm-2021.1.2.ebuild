@@ -1,13 +1,13 @@
-# Copyright 1999-2021 William Diaz <william@wdiaz.org>
+# Copyright 2021 William Diaz <william@wdiaz.org>
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
 inherit desktop eutils
 
-DESCRIPTION="IntelliJ IDEA is an intelligent Java IDE"
-HOMEPAGE="https://jetbrains.com/idea"
-SRC_URI="https://download.jetbrains.com/idea/ideaIU-${PV}.tar.gz -> ${P}.tar.gz"
+DESCRIPTION="The smartest JavaScript IDE"
+HOMEPAGE="https://www.jetbrains.com/webstorm"
+SRC_URI="https://download.jetbrains.com/webstorm/WebStorm-${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="|| ( IDEA IDEA_Academic IDEA_Classroom IDEA_OpenSource IDEA_Personal )
 	Apache-1.1 Apache-2.0 BSD BSD-2 CC0-1.0 CDDL-1.1 CPL-0.5 CPL-1.0
@@ -19,11 +19,14 @@ KEYWORDS="~amd64 ~x86"
 RESTRICT="bindist mirror splitdebug"
 IUSE="custom-jdk"
 
-BUILD_NUMBER="211.7142.45"
-S="${WORKDIR}/idea-IU-${BUILD_NUMBER}"
+BDEPEND="dev-util/patchelf"
 
 RDEPEND="
+	dev-libs/libdbusmenu
 	!custom-jdk? ( virtual/jdk )"
+
+BUILD_NUMBER="211.7442.26"
+S="${WORKDIR}/WebStorm-${BUILD_NUMBER}"
 
 QA_PREBUILT="opt/${P}/*"
 
@@ -38,6 +41,13 @@ src_prepare() {
 	use custom-jdk || remove_me+=( jbr )
 
 	rm -rv "${remove_me[@]}" || die
+
+	for file in "jbr/lib/"/{libjcef.so,jcef_helper}
+	do
+		if [[ -f "${file}" ]]; then
+			patchelf --set-rpath '$ORIGIN' ${file} || die
+		fi
+	done
 }
 
 src_install() {
@@ -45,7 +55,7 @@ src_install() {
 
 	insinto "${dir}"
 	doins -r *
-	fperms 755 "${dir}"/bin/idea.sh
+	fperms 755 "${dir}"/bin/${PN}.sh
 
 	if use amd64; then
 		fperms 755 "${dir}"/bin/fsnotifier64
@@ -59,13 +69,15 @@ src_install() {
 
 	if use custom-jdk; then
 		if [[ -d jbr ]]; then
-		fperms 755 "${dir}"/jbr/bin/{jaotc,java,javac,jdb,jjs,jrunscript,keytool,pack200,rmid,rmiregistry,serialver,unpack200}
+			fperms 755 "${dir}"/jbr/bin/{jaotc,java,javac,jdb,jjs,jrunscript,keytool,pack200,rmid,rmiregistry,serialver,unpack200}
+			# Fix #763582
+			fperms 755 "${dir}"/jbr/lib/{chrome-sandbox,jcef_helper,jexec,jspawnhelper}
 		fi
 	fi
 
-	make_wrapper "${PN}" "${dir}/bin/idea.sh"
-	newicon "bin/idea.svg" "${PN}.svg"
-	make_desktop_entry "${PN}" "Idea Ultimate ${VER}" "${PN}" "Development;IDE;"
+	make_wrapper "${PN}" "${dir}/bin/${PN}.sh"
+	newicon "bin/${PN}.svg" "${PN}.svg"
+	make_desktop_entry "${PN}" "WebStorm ${VER}" "${PN}" "Development;IDE;WebDevelopment;"
 
 	# recommended by: https://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
 	dodir /usr/lib/sysctl.d/

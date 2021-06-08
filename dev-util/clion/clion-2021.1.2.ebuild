@@ -19,12 +19,33 @@ KEYWORDS="~amd64 ~x86"
 RESTRICT="bindist mirror splitdebug"
 IUSE="custom-jdk"
 
+BDEPEND="dev-util/patchelf"
+
 # RDEPENDS may cause false positives in repoman.
 # clion requires cmake and gdb at runtime to build and debug C/C++ projects
 RDEPEND="
+	app-accessibility/at-spi2-atk
+	app-accessibility/at-spi2-core
+	dev-libs/atk
 	dev-libs/libdbusmenu
+	dev-libs/nss
 	dev-util/cmake
+	media-libs/alsa-lib
+	media-libs/freetype
+	media-libs/mesa
+	net-print/cups
 	sys-devel/gdb
+	x11-libs/libXScrnSaver
+	x11-libs/libXcomposite
+	x11-libs/libXcursor
+	x11-libs/libXdamage
+	x11-libs/libXi
+	x11-libs/libXrandr
+	x11-libs/libXtst
+	x11-libs/libXxf86vm
+	x11-libs/libdrm
+	x11-libs/libxkbcommon
+	x11-libs/pango
 	!custom-jdk? ( virtual/jdk )"
 
 QA_PREBUILT="opt/${P}/*"
@@ -37,6 +58,8 @@ src_prepare() {
 		bin/lldb/linux
 		bin/cmake
 		license/CMake*
+		lib/pty4j-native/linux/aarch64
+		lib/pty4j-native/linux/mips64el
 		lib/pty4j-native/linux/ppc64le
 	)
 
@@ -46,6 +69,13 @@ src_prepare() {
 	use custom-jdk || remove_me+=( jbr )
 
 	rm -rv "${remove_me[@]}" || die
+
+	for file in "jbr/lib/"/{libjcef.so,jcef_helper}
+	do
+		if [[ -f "${file}" ]]; then
+			patchelf --set-rpath '$ORIGIN' ${file} || die
+		fi
+	done
 }
 
 src_install() {
@@ -67,7 +97,9 @@ src_install() {
 
 	if use custom-jdk; then
 		if [[ -d jbr ]]; then
-		fperms 755 "${dir}"/jbr/bin/{jaotc,java,javac,jdb,jjs,jrunscript,keytool,pack200,rmid,rmiregistry,serialver,unpack200}
+			fperms 755 "${dir}"/jbr/bin/{jaotc,java,javac,jdb,jjs,jrunscript,keytool,pack200,rmid,rmiregistry,serialver,unpack200}
+			# Fix #763582
+			fperms 755 "${dir}"/jbr/lib/{chrome-sandbox,jcef_helper,jexec,jspawnhelper}
 		fi
 	fi
 
