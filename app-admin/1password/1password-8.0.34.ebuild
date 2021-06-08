@@ -10,12 +10,11 @@ CHROMIUM_LANGS="
 
 inherit desktop chromium-2 pax-utils xdg
 
-MY_PV="$(ver_cut 1-3)-$(ver_cut 4-5)"
-MY_PV="${MY_PV/_beta}"
+MY_P="${P}.x64"
 
 DESCRIPTION="Password manager and secure wallet"
 HOMEPAGE="https://1password.com"
-SRC_URI="https://downloads.1password.com/linux/tar/beta/x86_64/${PN}-${MY_PV}.BETA.x64.tar.gz"
+SRC_URI="https://downloads.1password.com/linux/tar/stable/x86_64/${MY_P}.tar.gz"
 
 LICENSE="LicenseRef-1Password-Proprietary"
 SLOT="0"
@@ -28,7 +27,7 @@ RDEPEND="
 	x11-libs/gtk+:3
 	x11-libs/libXScrnSaver"
 
-S="${WORKDIR}/${PN}-${MY_PV}.BETA.x64"
+S="${WORKDIR}/${MY_P}"
 QA_PREBUILT="*"
 
 src_prepare() {
