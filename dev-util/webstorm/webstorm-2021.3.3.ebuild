@@ -1,9 +1,9 @@
-# Copyright 2021 William Diaz <william@wdiaz.org>
+# Copyright 2022 William Diaz <william@wdiaz.org>
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-inherit desktop eutils
+inherit desktop wrapper
 
 DESCRIPTION="The smartest JavaScript IDE"
 HOMEPAGE="https://www.jetbrains.com/webstorm"
@@ -15,17 +15,23 @@ LICENSE="|| ( IDEA IDEA_Academic IDEA_Classroom IDEA_OpenSource IDEA_Personal )
 	LGPL-2.1+ LGPL-3 MIT MPL-1.0 MPL-1.1 OFL public-domain PSF-2 UoI-NCSA ZLIB"
 SLOT="0"
 VER="$(ver_cut 1-2)"
-KEYWORDS="~amd64 ~x86"
-RESTRICT="bindist mirror splitdebug"
+KEYWORDS="~amd64 ~arm64"
+RESTRICT="strip bindist mirror splitdebug"
 IUSE="custom-jdk"
 
 BDEPEND="dev-util/patchelf"
 
 RDEPEND="
+	app-accessibility/at-spi2-atk:2
+	app-accessibility/at-spi2-core:2
+	dev-libs/atk
+	dev-libs/expat
+	dev-libs/glib:2
 	dev-libs/libdbusmenu
 	!custom-jdk? ( virtual/jdk )"
 
-BUILD_NUMBER="212.5284.41"
+BUILD_NUMBER="213.7172.31"
+
 S="${WORKDIR}/WebStorm-${BUILD_NUMBER}"
 
 QA_PREBUILT="opt/${P}/*"
@@ -33,10 +39,16 @@ QA_PREBUILT="opt/${P}/*"
 src_prepare() {
 	default
 
-	local remove_me=()
+	local remove_me=(
+		lib/pty4j-native/linux/x86
+		lib/pty4j-native/linux/arm
+		lib/pty4j-native/linux/mips64el
+		lib/pty4j-native/linux/ppc64le
+		plugins/remote-dev-server/selfcontained
+	)
 
 	use amd64 || remove_me+=( lib/pty4j-native/linux/x86_64)
-	use x86 || remove_me+=( lib/pty4j-native/linux/x86)
+	use arm64 || remove_me+=( lib/pty4j-native/linux/aarch64)
 
 	use custom-jdk || remove_me+=( jbr )
 
@@ -48,6 +60,14 @@ src_prepare() {
 			patchelf --set-rpath '$ORIGIN' ${file} || die
 		fi
 	done
+
+	sed -i \
+		-e "\$a\\\\" \
+		-e "\$a#-----------------------------------------------------------------------" \
+		-e "\$a# Disable automatic updates as these are handled through Gentoo's" \
+		-e "\$a# package manager. See bug #704494" \
+		-e "\$a#-----------------------------------------------------------------------" \
+		-e "\$aide.no.platform.update=Gentoo"  bin/idea.properties
 }
 
 src_install() {
@@ -61,6 +81,7 @@ src_install() {
 	if use custom-jdk; then
 		if [[ -d jbr ]]; then
 			fperms 755 "${dir}"/jbr/bin/{jaotc,java,javac,jdb,jjs,jrunscript,keytool,pack200,rmid,rmiregistry,serialver,unpack200}
+
 			# Fix #763582
 			fperms 755 "${dir}"/jbr/lib/{chrome-sandbox,jcef_helper,jexec,jspawnhelper}
 		fi

@@ -1,7 +1,7 @@
-# Copyright 2021 Gentoo Authors
+# Copyright 2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 CHROMIUM_LANGS="
 	am ar bg bn ca cs da de el en-GB en-US es es-419 et fa fi fil fr gu he hi
@@ -31,9 +31,16 @@ S="${WORKDIR}/${MY_P}"
 QA_PREBUILT="*"
 
 src_prepare() {
-	pushd locales > /dev/null || die
+	pushd "locales" > /dev/null || die
 	chromium_remove_language_paks
 	popd > /dev/null || die
+
+	# Fill in policy kit file with a list of (the first 10) human users of the system.
+	export POLICY_OWNERS
+	POLICY_OWNERS="$(cut -d: -f1,3 /etc/passwd | grep -E ':[0-9]{4}$' | cut -d: -f1 | head -n 10 | sed 's/^/unix-user:/' | tr '\n' ' ')"
+	eval "cat <<EOF
+	$(cat ./com.1password.1Password.policy.tpl)
+	EOF" > ./com.1password.1Password.policy
 
 	default
 }

@@ -1,20 +1,18 @@
-# Copyright 2021 Gentoo Authors
+# Copyright 2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 inherit linux-info unpacker
-
-MY_P="${P}-1"
 
 DESCRIPTION="NordVPN CLI tool for Linux"
 HOMEPAGE="https://nordvpn.com"
 BASE_URI="https://repo.nordvpn.com/deb/${PN}/debian/pool/main"
 SRC_URI="
-	amd64? ( ${BASE_URI}/${MY_P/-/_}_amd64.deb )
-	arm? ( ${BASE_URI}/${MY_P/-/_}_armhf.deb )
-	arm64? ( ${BASE_URI}/${MY_P/-/_}_arm64.deb )
-	x86? ( ${BASE_URI}/${MY_P/-/_}_i386.deb )"
+	amd64? ( ${BASE_URI}/${PN}_${PV/-/_}_amd64.deb )
+	arm? ( ${BASE_URI}/${PN}_${PV/-/_}_armhf.deb )
+	arm64? ( ${BASE_URI}/${PN}_${PV/-/_}_arm64.deb )
+	x86? ( ${BASE_URI}/${PN}_${PV/-/_}_i386.deb )"
 
 LICENSE="NordVPN"
 SLOT="0"
