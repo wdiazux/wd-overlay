@@ -1,13 +1,13 @@
-# Copyright 2022 William Diaz <william@wdiaz.org>
+#Copyright 1999-2022 William Diaz <william@wdiaz.org>
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 inherit desktop wrapper
 
-DESCRIPTION="The smartest JavaScript IDE"
-HOMEPAGE="https://www.jetbrains.com/webstorm"
-SRC_URI="https://download.jetbrains.com/webstorm/WebStorm-${PV}.tar.gz -> ${P}.tar.gz"
+DESCRIPTION="IntelliJ IDEA is an intelligent Java IDE"
+HOMEPAGE="https://jetbrains.com/idea"
+SRC_URI="https://download.jetbrains.com/idea/ideaIU-${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="|| ( IDEA IDEA_Academic IDEA_Classroom IDEA_OpenSource IDEA_Personal )
 	Apache-1.1 Apache-2.0 BSD BSD-2 CC0-1.0 CDDL-1.1 CPL-0.5 CPL-1.0
@@ -15,24 +15,19 @@ LICENSE="|| ( IDEA IDEA_Academic IDEA_Classroom IDEA_OpenSource IDEA_Personal )
 	LGPL-2.1+ LGPL-3 MIT MPL-1.0 MPL-1.1 OFL public-domain PSF-2 UoI-NCSA ZLIB"
 SLOT="0"
 VER="$(ver_cut 1-2)"
-KEYWORDS="~amd64 ~arm64"
+KEYWORDS="~amd64 ~x86"
 RESTRICT="strip bindist mirror splitdebug"
 IUSE="custom-jdk"
 
 BDEPEND="dev-util/patchelf"
 
+BUILD_NUMBER="221.5080.210"
+S="${WORKDIR}/idea-IU-${BUILD_NUMBER}"
+
 RDEPEND="
-	app-accessibility/at-spi2-atk:2
-	app-accessibility/at-spi2-core:2
-	dev-libs/atk
-	dev-libs/expat
-	dev-libs/glib:2
-	dev-libs/libdbusmenu
+	media-libs/giflib
+	x11-libs/libXtst
 	!custom-jdk? ( virtual/jdk )"
-
-BUILD_NUMBER="213.7172.31"
-
-S="${WORKDIR}/WebStorm-${BUILD_NUMBER}"
 
 QA_PREBUILT="opt/${P}/*"
 
@@ -75,7 +70,7 @@ src_install() {
 
 	insinto "${dir}"
 	doins -r *
-	fperms 755 "${dir}"/bin/${PN}.sh
+	fperms 755 "${dir}"/bin/idea.sh
 	fperms 755 "${dir}"/bin/fsnotifier
 
 	if use custom-jdk; then
@@ -87,9 +82,9 @@ src_install() {
 		fi
 	fi
 
-	make_wrapper "${PN}" "${dir}/bin/${PN}.sh"
-	newicon "bin/${PN}.svg" "${PN}.svg"
-	make_desktop_entry "${PN}" "WebStorm ${VER}" "${PN}" "Development;IDE;WebDevelopment;"
+	make_wrapper "${PN}" "${dir}/bin/idea.sh"
+	newicon "bin/idea.svg" "${PN}.svg"
+	make_desktop_entry "${PN}" "Idea Ultimate ${VER}" "${PN}" "Development;IDE;"
 
 	# recommended by: https://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
 	dodir /usr/lib/sysctl.d/

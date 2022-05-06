@@ -18,12 +18,14 @@ SRC_URI="https://downloads.1password.com/linux/tar/stable/x86_64/${MY_P}.tar.gz"
 
 LICENSE="LicenseRef-1Password-Proprietary"
 SLOT="0"
-KEYWORDS="-* ~amd64"
+KEYWORDS="~amd64"
 RESTRICT="bindist mirror strip"
+
+IUSE="+policykit"
 
 RDEPEND="
 	dev-libs/nss
-	sys-auth/polkit
+	policykit? ( sys-auth/polkit )
 	x11-libs/gtk+:3
 	x11-libs/libXScrnSaver"
 
@@ -35,12 +37,14 @@ src_prepare() {
 	chromium_remove_language_paks
 	popd > /dev/null || die
 
-	# Fill in policy kit file with a list of (the first 10) human users of the system.
-	export POLICY_OWNERS
-	POLICY_OWNERS="$(cut -d: -f1,3 /etc/passwd | grep -E ':[0-9]{4}$' | cut -d: -f1 | head -n 10 | sed 's/^/unix-user:/' | tr '\n' ' ')"
-	eval "cat <<EOF
-	$(cat ./com.1password.1Password.policy.tpl)
-	EOF" > ./com.1password.1Password.policy
+	if use policykit; then
+		# Fill in policy kit file with a list of (the first 10) human users of the system.
+		export POLICY_OWNERS
+		POLICY_OWNERS="$(cut -d: -f1,3 /etc/passwd | grep -E ':[0-9]{4}$' | cut -d: -f1 | head -n 10 | sed 's/^/unix-user:/' | tr '\n' ' ')"
+		eval "cat <<EOF
+		$(cat ./com.1password.1Password.policy.tpl)
+		EOF" > ./com.1password.1Password.policy
+	fi
 
 	default
 }
@@ -59,8 +63,10 @@ src_install() {
 	insinto ${ONE_PASSWORD_HOME}
 	doins -r *
 
-	insinto "/usr/share/polkit-1/actions/"
-	doins "${S}"/com.1password.1Password.policy
+	if use policykit; then
+		insinto "/usr/share/polkit-1/actions/"
+		doins "${S}"/com.1password.1Password.policy
+	fi
 
 	dosym "${ONE_PASSWORD_HOME}/${PN}" /usr/bin/${PN}
 

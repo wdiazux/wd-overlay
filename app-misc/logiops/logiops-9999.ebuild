@@ -1,7 +1,7 @@
-# Copyright 2021 Gentoo Authors
+# Copyright 2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 inherit cmake linux-info
 
@@ -11,7 +11,6 @@ HOMEPAGE="https://github.com/PixlOne/logiops"
 if [[ "${PV}" == 9999 ]] ; then
 	inherit git-r3
 	EGIT_REPO_URI="https://github.com/PixlOne/logiops.git"
-	S="${WORKDIR}/${PN}-${PV}"
 else
 	SRC_URI="https://github.com/PixlOne/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 fi
@@ -23,7 +22,7 @@ IUSE="systemd"
 RESTRICT="mirror"
 
 DEPEND="
-	dev-libs/libconfig:=
+	dev-libs/libconfig:=[cxx]
 	dev-libs/libevdev
 	virtual/libudev
 	systemd? ( sys-apps/systemd )
