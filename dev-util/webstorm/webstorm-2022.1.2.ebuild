@@ -30,7 +30,7 @@ RDEPEND="
 	dev-libs/libdbusmenu
 	!custom-jdk? ( virtual/jdk )"
 
-BUILD_NUMBER="221.5080.193"
+BUILD_NUMBER="221.5787.30"
 
 S="${WORKDIR}/WebStorm-${BUILD_NUMBER}"
 
