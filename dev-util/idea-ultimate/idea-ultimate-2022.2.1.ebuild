@@ -21,7 +21,7 @@ IUSE="custom-jdk"
 
 BDEPEND="dev-util/patchelf"
 
-BUILD_NUMBER="222.3345.118"
+BUILD_NUMBER="222.3739.54"
 S="${WORKDIR}/idea-IU-${BUILD_NUMBER}"
 
 RDEPEND="
