@@ -1,4 +1,4 @@
-# Copyright 1999-2022 William Diaz <william@wdiaz.org>
+# Copyright 1999-2023 William Diaz <william@wdiaz.org>
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -21,12 +21,8 @@ IUSE="custom-jdk"
 
 BDEPEND="dev-util/patchelf"
 
-# RDEPENDS may cause false positives in repoman.
-# clion requires cmake and gdb at runtime to build and debug C/C++ projects
 RDEPEND="
-	app-accessibility/at-spi2-atk:2
-	app-accessibility/at-spi2-core:2
-	dev-libs/atk
+	>=app-accessibility/at-spi2-core-2.46.0:2
 	dev-libs/expat
 	dev-libs/glib:2
 	dev-libs/nspr
@@ -48,11 +44,12 @@ RDEPEND="
 	x11-libs/libXfixes
 	x11-libs/libXi
 	x11-libs/libXrandr
+	x11-libs/libXrender
 	x11-libs/libXtst
 	x11-libs/libXxf86vm
-	x11-libs/libdrm
 	x11-libs/libxcb
 	x11-libs/libxkbcommon
+	x11-libs/pango
 	!custom-jdk? ( virtual/jdk )"
 
 QA_PREBUILT="opt/${P}/*"
@@ -61,9 +58,11 @@ src_prepare() {
 	default
 
 	local remove_me=(
+		help/ReferenceCardForMac.pdf
 		bin/cmake
 		bin/lldb/linux
 		bin/gdb/linux
+		bin/ninja
 		license/CMake*
 		lib/pty4j-native/linux/x86
 		lib/pty4j-native/linux/arm
@@ -100,8 +99,7 @@ src_install() {
 
 	insinto "${dir}"
 	doins -r *
-	fperms 755 "${dir}"/bin/{${PN}.sh,clang/linux/clang{d,-tidy}}
-	fperms 755 "${dir}"/bin/fsnotifier
+	fperms 755 "${dir}"/bin/{${PN}.sh,fsnotifier,inspect.sh,ltedit.sh,repair,restart.py,clang/linux/x64/{clangd,clang-tidy,clazy-standalone,llvm-symbolizer}}
 
 	if use custom-jdk; then
 		if [[ -d jbr ]]; then
@@ -111,11 +109,13 @@ src_install() {
 		fi
 	fi
 
+	dosym -r "${EPREFIX}/usr/bin/ninja" "${dir}"/bin/ninja/linux/x64/ninja
+
 	make_wrapper "${PN}" "${dir}/bin/${PN}.sh"
 	newicon "bin/${PN}.svg" "${PN}.svg"
 	make_desktop_entry "${PN}" "CLion ${VER}" "${PN}" "Development;IDE;"
 
 	# recommended by: https://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
-	dodir /usr/lib/sysctl.d/
-	echo "fs.inotify.max_user_watches = 524288" > "${D}/usr/lib/sysctl.d/30-${PN}-inotify-watches.conf" || die
+	insinto /usr/lib/sysctl.d
+	newins - 30-"${PN}"-inotify-watches.conf <<<"fs.inotify.max_user_watches = 524288"
 }

@@ -56,19 +56,24 @@ src_install() {
 	for size in 32x32 64x64 256x256 512x512; do
 		doicon -s "${size}" "resources/icons/hicolor/${size}/apps/${PN}.png"
 	done
+	rm -r resources/icons/
 
 	domenu "${S}/resources/${PN}.desktop"
-
-	dodir ${ONE_PASSWORD_HOME}
-	insinto ${ONE_PASSWORD_HOME}
-	doins -r *
+	rm resources/1password.desktop resources/custom_allowed_browsers
 
 	if use policykit; then
 		insinto "/usr/share/polkit-1/actions/"
 		doins "${S}"/com.1password.1Password.policy
 	fi
+	rm com.1password.1Password.policy com.1password.1Password.policy.tpl install_biometrics_policy.sh
+
+	dodir ${ONE_PASSWORD_HOME}
+	insinto ${ONE_PASSWORD_HOME}
+	doins -r *
 
 	dosym "${ONE_PASSWORD_HOME}/${PN}" /usr/bin/${PN}
 
 	fperms +x "${ONE_PASSWORD_HOME}/${PN}"
+
+	fperms 4755 "${ONE_PASSWORD_HOME}/chrome-sandbox"
 }

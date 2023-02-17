@@ -1,9 +1,9 @@
-# Copyright 2022 Gentoo Authors
+# Copyright 2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit linux-info unpacker
+inherit linux-info unpacker xdg-utils tmpfiles
 
 MY_PV=${PV/-/_}
 
@@ -50,7 +50,6 @@ pkg_pretend() {
 src_prepare() {
 	default
 
-	rm _gpgbuilder || die
 	if use !systemd; then
 		rm -rf usr/lib || die
 	fi
@@ -65,7 +64,7 @@ src_install() {
 	dobin usr/bin/nordvpn
 	dosbin usr/sbin/nordvpnd
 
-	use !systemd && newinitd "${FILESDIR}/${PN}d ${PN}"
+	use !systemd && newinitd "${FILESDIR}/${PN}.initd ${PN}"
 
 	insinto /var/lib/
 	doins -r var/lib/nordvpn
@@ -78,20 +77,30 @@ src_install() {
 	fowners root:nordvpn /var/lib/nordvpn/openvpn
 	fperms 0550 /var/lib/nordvpn/openvpn
 
-	insinto /usr/share/bash-completion/completions
-	doins usr/share/bash-completion/completions/nordvpn
+	insinto /usr/share/
+	doins -r usr/share/applications
+	doins -r usr/share/zsh
+	doins -r usr/share/bash-completion
+	doins -r usr/share/icons
 
 	dodoc usr/share/doc/nordvpn/changelog
 	doman usr/share/man/man1/nordvpn.1
 
 	use ipsymlink && dosym /bin/ip /sbin/ip
 
-	insinto /usr/lib/tmpfiles.d
-	doins "${FILESDIR}/nordvpn.conf"
+	dotmpfiles "${FILESDIR}/nordvpn.conf"
 }
 
 pkg_postinst() {
 	if use !ipsymlink ; then
 		elog "nordvpnd expects to find ip command in /sbin folder iproute2 package installs it in /bin please make sure to create a symlink: ln -s /bin/ip /sbin/ip"
 	fi
+	xdg_desktop_database_update
+	xdg_icon_cache_update
+	tmpfiles_process nordvpn.conf
+}
+
+pkg_postrm (){
+	xdg_desktop_database_update
+	xdg_icon_cache_update
 }

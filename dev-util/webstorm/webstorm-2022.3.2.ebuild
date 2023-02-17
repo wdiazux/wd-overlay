@@ -1,4 +1,4 @@
-# Copyright 2022 William Diaz <william@wdiaz.org>
+# Copyright 2023 William Diaz <william@wdiaz.org>
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -22,15 +22,13 @@ IUSE="custom-jdk"
 BDEPEND="dev-util/patchelf"
 
 RDEPEND="
-	app-accessibility/at-spi2-atk:2
-	app-accessibility/at-spi2-core:2
-	dev-libs/atk
+	>=app-accessibility/at-spi2-core-2.46.0:2
 	dev-libs/expat
 	dev-libs/glib:2
 	dev-libs/libdbusmenu
 	!custom-jdk? ( virtual/jdk )"
 
-BUILD_NUMBER="222.3739.57"
+BUILD_NUMBER="223.8617.44"
 
 S="${WORKDIR}/WebStorm-${BUILD_NUMBER}"
 
@@ -40,15 +38,14 @@ src_prepare() {
 	default
 
 	local remove_me=(
-		lib/pty4j-native/linux/x86
-		lib/pty4j-native/linux/arm
-		lib/pty4j-native/linux/mips64el
-		lib/pty4j-native/linux/ppc64le
-		plugins/remote-dev-server/selfcontained
+		help/ReferenceCardForMac.pdf
+		plugins/cwm-plugin/quiche-native/darwin-aarch64
+		plugins/cwm-plugin/quiche-native/darwin-x86-64
+		plugins/cwm-plugin/quiche-native/win32-x86-64
 	)
 
-	use amd64 || remove_me+=( lib/pty4j-native/linux/x86_64)
-	use arm64 || remove_me+=( lib/pty4j-native/linux/aarch64)
+	use amd64 || remove_me+=( plugins/cwm-plugin/quiche-native/linux-aarch64)
+	use arm64 || remove_me+=( plugins/cwm-plugin/quiche-native/linux-x86-64)
 
 	use custom-jdk || remove_me+=( jbr )
 
@@ -75,8 +72,7 @@ src_install() {
 
 	insinto "${dir}"
 	doins -r *
-	fperms 755 "${dir}"/bin/${PN}.sh
-	fperms 755 "${dir}"/bin/fsnotifier
+	fperms 755 "${dir}"/bin/{${PN}.sh,fsnotifier,inspect.sh,ltedit.sh,repair,restart.py}
 
 	if use custom-jdk; then
 		if [[ -d jbr ]]; then
@@ -92,6 +88,6 @@ src_install() {
 	make_desktop_entry "${PN}" "WebStorm ${VER}" "${PN}" "Development;IDE;WebDevelopment;"
 
 	# recommended by: https://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
-	dodir /usr/lib/sysctl.d/
-	echo "fs.inotify.max_user_watches = 524288" > "${D}/usr/lib/sysctl.d/30-${PN}-inotify-watches.conf" || die
+	insinto /usr/lib/sysctl.d
+	newins - 30-"${PN}"-inotify-watches.conf <<<"fs.inotify.max_user_watches = 524288"
 }

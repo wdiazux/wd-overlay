@@ -1,4 +1,4 @@
-# Copyright 2022 Gentoo Authors
+# Copyright 2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -7,12 +7,7 @@ inherit cmake
 
 DESCRIPTION="Network A/V in OBS Studio with NewTek's NDI technology"
 HOMEPAGE="https://github.com/Palakis/obs-ndi"
-SRC_URI="https://github.com/Palakis/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
-PATCHES=(
-	"${FILESDIR}/libndi-name.patch"
-	"${FILESDIR}/library-path.patch"
-	"${FILESDIR}/tune-remove.patch"
-)
+SRC_URI="https://github.com/Palakis/${PN}/archive/dummy-tag-${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -24,3 +19,4 @@ RDEPEND="${DEPEND}"
 BDEPEND=">=dev-util/cmake-3.5"
 RESTRICT="mirror"
 
+S="${WORKDIR}/${PN}-dummy-tag-${PV}"
