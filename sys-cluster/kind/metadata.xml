@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>william@wdiaz.org</email>
+		<name>William Diaz</name>
+	</maintainer>
+	<use>
+		<flag name="docker">Install docker as provider.</flag>
+		<flag name="podman">Install podman as provider.</flag>
+		<flag name="bash-completion">Enable bash-completion support.</flag>
+		<flag name="fish-completion">Enable fish completion support.</flag>
+		<flag name="zsh-completion">Enable zsh completion support.</flag>
+    </use>
+</pkgmetadata>
