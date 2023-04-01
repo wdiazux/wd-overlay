@@ -12,13 +12,11 @@ HOMEPAGE="https://nordvpn.com"
 BASE_URI="https://repo.nordvpn.com/deb/${PN}/debian/pool/main"
 SRC_URI="
 	amd64? ( ${BASE_URI}/${PN}_${MY_PV}_amd64.deb )
-	arm? ( ${BASE_URI}/${PN}_${MY_PV}_armhf.deb )
-	arm64? ( ${BASE_URI}/${PN}_${MY_PV}_arm64.deb )
-	x86? ( ${BASE_URI}/${PN}_${MY_PV}_i386.deb )"
+	arm64? ( ${BASE_URI}/${PN}_${MY_PV}_arm64.deb )"
 
 LICENSE="NordVPN"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~x86"
+KEYWORDS="~amd64 ~arm64"
 IUSE="ipsymlink nordlynx systemd"
 RESTRICT="mirror strip"
 
@@ -37,6 +35,10 @@ RDEPEND="
 	)"
 
 S="${WORKDIR}"
+
+QA_PREBUILT="usr/*
+	var/lib/${PN}/*"
+
 
 pkg_pretend() {
 	if use nordlynx && kernel_is -ge 5 6; then
@@ -61,10 +63,10 @@ src_prepare() {
 src_install() {
 	cd ${S}
 
+	use !systemd && newinitd "${FILESDIR}/${PN}.initd ${PN}"
+
 	dobin usr/bin/nordvpn
 	dosbin usr/sbin/nordvpnd
-
-	use !systemd && newinitd "${FILESDIR}/${PN}.initd ${PN}"
 
 	insinto /var/lib/
 	doins -r var/lib/nordvpn
