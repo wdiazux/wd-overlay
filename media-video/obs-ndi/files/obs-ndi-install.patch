@@ -1,0 +1,29 @@
+diff -ru a/cmake/ObsPluginHelpers.cmake b/cmake/ObsPluginHelpers.cmake
+--- a/cmake/ObsPluginHelpers.cmake	2023-03-10 17:46:50.000000000 -0600
++++ b/cmake/ObsPluginHelpers.cmake	2023-04-01 15:18:32.995445332 -0600
+@@ -491,9 +491,9 @@
+       set(OBS_DATA_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/obs)
+     else()
+       set(OBS_LIBRARY_DESTINATION bin/${_ARCH_SUFFIX}bit)
+-      set(OBS_PLUGIN_DESTINATION obs-plugins/${_ARCH_SUFFIX}bit)
++      set(OBS_PLUGIN_DESTINATION lib${_ARCH_SUFFIX}/obs-plugins)
+       set(CMAKE_INSTALL_RPATH "$ORIGIN/" "${CMAKE_INSTALL_PREFIX}/${OBS_LIBRARY_DESTINATION}")
+-      set(OBS_DATA_DESTINATION "data")
++      set(OBS_DATA_DESTINATION "share/obs")
+     endif()
+ 
+     # Setup Linux-specific CPack values for "deb" package generation
+diff -ru a/src/obs-ndi.cpp b/src/obs-ndi.cpp
+--- a/src/obs-ndi.cpp	2023-03-10 17:46:50.000000000 -0600
++++ b/src/obs-ndi.cpp	2023-04-01 15:18:32.996445355 -0600
+@@ -230,8 +230,8 @@
+ 		locations << path;
+ 	}
+ #if defined(__linux__) || defined(__APPLE__)
+-	locations << "/usr/lib";
+-	locations << "/usr/local/lib";
++	locations << "/usr/lib64";
++	locations << "/usr/local/lib64";
+ #endif
+ 	for (QString location : locations) {
+ 		path = QDir::cleanPath(

@@ -7,16 +7,20 @@ inherit cmake
 
 DESCRIPTION="Network A/V in OBS Studio with NewTek's NDI technology"
 HOMEPAGE="https://github.com/Palakis/obs-ndi"
-SRC_URI="https://github.com/Palakis/${PN}/archive/dummy-tag-${PV}.tar.gz -> ${P}.tar.gz"
+SRC_URI="https://github.com/${PN}/${PN}/archive/refs/tags/${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64"
+IUSE="qt6"
 
-DEPEND="media-video/ndi-sdk
-		media-video/obs-studio"
+DEPEND="
+		qt6? ( dev-qt/qtbase:6 )
+		!qt6? ( dev-qt/qtcore:5 )
+		>=media-video/obs-studio-28
+		>=media-video/ndi-sdk-bin-5"
 RDEPEND="${DEPEND}"
-BDEPEND=">=dev-util/cmake-3.5"
 RESTRICT="mirror"
 
-S="${WORKDIR}/${PN}-dummy-tag-${PV}"
+PATCHES="${FILESDIR}/${PN}-install.patch"
+
