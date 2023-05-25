@@ -1,4 +1,4 @@
-# Copyright 2022 Gentoo Authors
+# Copyright 2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -22,8 +22,10 @@ IUSE="systemd"
 RESTRICT="mirror"
 
 DEPEND="
+	dev-libs/glib
 	dev-libs/libconfig:=[cxx]
 	dev-libs/libevdev
+	sys-apps/dbus
 	virtual/libudev
 	systemd? ( sys-apps/systemd )
 "
@@ -41,6 +43,9 @@ src_install() {
 	default
 
 	cmake_src_install
+
+	# Install lib of submodule, as no install routine exist
+	dolib.so "${BUILD_DIR}/src/ipcgull/libipcgull.so"
 
 	insinto /etc
 	newins logid.example.cfg logid.cfg
