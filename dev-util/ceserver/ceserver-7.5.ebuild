@@ -12,8 +12,6 @@ SLOT="0"
 KEYWORDS="~amd64"
 RESTRICT="mirror"
 
-BDEPEND=""
-
 S="${WORKDIR}/cheat-engine-${PV}/Cheat Engine/ceserver/gcc"
 
 src_install() {

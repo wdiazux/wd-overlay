@@ -5,10 +5,7 @@
 		<email>william@wdiaz.org</email>
 		<name>William Diaz</name>
 	</maintainer>
-	<use>
-		<flag name="gui">Enable the GameConqueror GUI</flag>
-	</use>
 	<upstream>
-		<remote-id type="github">scanmem/scanmem</remote-id>
+		<remote-id type="github">obs-ndi/obs-ndi</remote-id>
 	</upstream>
 </pkgmetadata>

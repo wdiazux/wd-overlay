@@ -15,10 +15,10 @@ KEYWORDS="~amd64"
 IUSE="qt6"
 
 DEPEND="
-		qt6? ( dev-qt/qtbase:6 )
-		!qt6? ( dev-qt/qtcore:5 )
-		>=media-video/obs-studio-28
-		>=media-video/ndi-sdk-bin-5"
+	qt6? ( dev-qt/qtbase:6 )
+	!qt6? ( dev-qt/qtcore:5 )
+	>=media-video/obs-studio-28
+	>=media-video/ndi-sdk-bin-5"
 RDEPEND="${DEPEND}"
 RESTRICT="mirror"
 
