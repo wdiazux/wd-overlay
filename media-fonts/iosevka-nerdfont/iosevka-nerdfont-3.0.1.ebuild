@@ -5,7 +5,7 @@ EAPI=8
 
 inherit font
 
-DESCRIPTION="A free and open-source typeface for developers"
+DESCRIPTION="Patched font Iosevka from nerd fonts library"
 HOMEPAGE="https://github.com/ryanoasis/nerd-fonts"
 SRC_URI="https://github.com/ryanoasis/nerd-fonts/releases/download/v${PV}/Iosevka.tar.xz -> ${P}.tar.xz"
 
