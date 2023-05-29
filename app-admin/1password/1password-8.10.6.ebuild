@@ -64,8 +64,8 @@ src_prepare() {
 		export POLICY_OWNERS
 		POLICY_OWNERS="$(cut -d: -f1,3 /etc/passwd | grep -E ':[0-9]{4}$' | cut -d: -f1 | head -n 10 | sed 's/^/unix-user:/' | tr '\n' ' ')"
 		eval "cat <<EOF
-		$(cat ./com.1password.1Password.policy.tpl)
-		EOF" > ./com.1password.1Password.policy
+$(cat ./com.1password.1Password.policy.tpl)
+EOF" > ./com.1password.1Password.policy
 	fi
 
 	if use wayland; then
