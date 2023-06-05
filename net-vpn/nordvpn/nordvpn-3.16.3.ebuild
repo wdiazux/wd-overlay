@@ -17,7 +17,7 @@ SRC_URI="
 LICENSE="NordVPN"
 SLOT="0"
 KEYWORDS="~amd64 ~arm64"
-IUSE="ipsymlink nordlynx systemd"
+IUSE="nordlynx systemd"
 RESTRICT="mirror strip"
 
 RDEPEND="
@@ -88,15 +88,10 @@ src_install() {
 	dodoc usr/share/doc/nordvpn/changelog
 	doman usr/share/man/man1/nordvpn.1
 
-	use ipsymlink && dosym /bin/ip /sbin/ip
-
 	dotmpfiles "${FILESDIR}/nordvpn.conf"
 }
 
 pkg_postinst() {
-	if use !ipsymlink ; then
-		elog "nordvpnd expects to find ip command in /sbin folder iproute2 package installs it in /bin please make sure to create a symlink: ln -s /bin/ip /sbin/ip"
-	fi
 	xdg_desktop_database_update
 	xdg_icon_cache_update
 	tmpfiles_process nordvpn.conf
