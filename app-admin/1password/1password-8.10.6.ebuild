@@ -4,9 +4,9 @@
 EAPI=8
 
 CHROMIUM_LANGS="
-	am ar bg bn ca cs da de el en-GB es es-419 et fa fi fil fr gu he
+	af am ar bg bn ca cs da de el en-GB en-US es es-419 et fa fi fil fr gu he
 	hi hr hu id it ja kn ko lt lv ml mr ms nb nl pl pt-BR pt-PT ro ru sk sl sr
-	sv sw ta te th tr uk vi zh-CN zh-TW"
+	sv sw ta te th tr uk ur vi zh-CN zh-TW"
 
 inherit chromium-2 desktop pax-utils verify-sig xdg
 
@@ -20,7 +20,7 @@ SRC_URI="https://downloads.1password.com/linux/tar/stable/x86_64/${MY_P}.tar.gz
 LICENSE="LicenseRef-1Password-Proprietary"
 SLOT="0"
 KEYWORDS="~amd64"
-RESTRICT="bindist mirror splitdebug test"
+RESTRICT="bindist mirror"
 
 IUSE="+policykit appindicator wayland"
 
@@ -40,6 +40,19 @@ RDEPEND="
 	x11-libs/gtk+:3
 	x11-libs/libXScrnSaver
 	x11-themes/hicolor-icon-theme"
+
+QA_PREBUILT="1Password-BrowserSupport
+	1Password-HIDHelper
+	1Password-KeyringHelper
+	1Password-LastPass-Exporter
+	chrome_crashpad_handler
+	chrome-sandbox
+	libEGL.so
+	libffmpeg.so
+	libGLESv2.so
+	libvk_swiftshader.so
+	libvulkan.so.1
+	op-ssh-sign"
 
 VERIFY_SIG_OPENPGP_KEY_PATH=${BROOT}/usr/share/openpgp-keys/1password.com.asc
 
@@ -80,8 +93,8 @@ src_install() {
 	local ONE_PASSWORD_HOME="/opt/1Password"
 
 	insinto /etc/${PN}
-	doins ./resources/custom_allowed_browsers
-	rm ./resources/custom_allowed_browsers || die
+	doins resources/custom_allowed_browsers
+	rm resources/custom_allowed_browsers || die
 
 	domenu "${S}/resources/${PN}.desktop"
 	rm resources/${PN}.desktop || die
@@ -104,14 +117,12 @@ src_install() {
 
 	dodir ${ONE_PASSWORD_HOME}
 	insinto ${ONE_PASSWORD_HOME}
-	doins -r *
+	cp -a * "${ED}${ONE_PASSWORD_HOME}" || die "cp failed"
 
 	pax-mark m ${PN}
-	fperms +x "${ONE_PASSWORD_HOME}/${PN}"
 	fperms 6755 "${ONE_PASSWORD_HOME}/${MY_PKG_HELPER}"
 	fperms 2755 "${ONE_PASSWORD_HOME}/${MY_PKG_BROWSER_SUPPORT}"
 	fperms 4755 "${ONE_PASSWORD_HOME}/chrome-sandbox"
-	fperms +x "${ONE_PASSWORD_HOME}/chrome_crashpad_handler"
 	fowners 0:onepassword "${ONE_PASSWORD_HOME}/${MY_PKG_HELPER}"
 	fowners 0:onepassword  "${ONE_PASSWORD_HOME}/${MY_PKG_BROWSER_SUPPORT}"
 	dosym "${ONE_PASSWORD_HOME}/${PN}" /usr/bin/${PN}
