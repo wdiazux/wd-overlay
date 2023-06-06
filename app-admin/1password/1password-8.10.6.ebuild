@@ -8,7 +8,7 @@ CHROMIUM_LANGS="
 	hi hr hu id it ja kn ko lt lv ml mr ms nb nl pl pt-BR pt-PT ro ru sk sl sr
 	sv sw ta te th tr uk ur vi zh-CN zh-TW"
 
-inherit chromium-2 desktop pax-utils verify-sig xdg
+inherit chromium-2 desktop pax-utils verify-sig xdg-utils
 
 MY_P="${P}.x64"
 
@@ -41,26 +41,22 @@ RDEPEND="
 	x11-libs/libXScrnSaver
 	x11-themes/hicolor-icon-theme"
 
-QA_PREBUILT="1Password-BrowserSupport
-	1Password-HIDHelper
-	1Password-KeyringHelper
-	1Password-LastPass-Exporter
-	chrome_crashpad_handler
-	chrome-sandbox
-	libEGL.so
-	libffmpeg.so
-	libGLESv2.so
-	libvk_swiftshader.so
-	libvulkan.so.1
-	op-ssh-sign"
+QA_PREBUILT="/opt/1Password/1Password-BrowserSupport
+	/opt/1Password/1Password-HIDHelper
+	/opt/1Password/1Password-KeyringHelper
+	/opt/1Password/1Password-LastPass-Exporter
+	/opt/1Password/chrome_crashpad_handler
+	/opt/1Password/chrome-sandbox
+	/opt/1Password/libEGL.so
+	/opt/1Password/libffmpeg.so
+	/opt/1Password/libGLESv2.so
+	/opt/1Password/libvk_swiftshader.so
+	/opt/1Password/libvulkan.so.1
+	/opt/1Password/op-ssh-sign"
 
 VERIFY_SIG_OPENPGP_KEY_PATH=${BROOT}/usr/share/openpgp-keys/1password.com.asc
 
 S="${WORKDIR}/${MY_P}"
-QA_PREBUILT="*"
-
-MY_PKG_HELPER="1Password-KeyringHelper"
-MY_PKG_BROWSER_SUPPORT="1Password-BrowserSupport"
 
 src_prepare() {
 	default
@@ -90,7 +86,6 @@ EOF" > ./com.1password.1Password.policy
 
 src_install() {
 	local size
-	local ONE_PASSWORD_HOME="/opt/1Password"
 
 	insinto /etc/${PN}
 	doins resources/custom_allowed_browsers
@@ -115,17 +110,27 @@ src_install() {
 	done
 	rm -r resources/icons/ || die
 
-	dodir ${ONE_PASSWORD_HOME}
-	insinto ${ONE_PASSWORD_HOME}
-	cp -a * "${ED}${ONE_PASSWORD_HOME}" || die "cp failed"
+	insinto /opt/1Password
+	cp -a * "${ED}"/opt/1Password/ || die "cp failed"
 
-	pax-mark m ${PN}
-	fperms 6755 "${ONE_PASSWORD_HOME}/${MY_PKG_HELPER}"
-	fperms 2755 "${ONE_PASSWORD_HOME}/${MY_PKG_BROWSER_SUPPORT}"
-	fperms 4755 "${ONE_PASSWORD_HOME}/chrome-sandbox"
-	fowners 0:onepassword "${ONE_PASSWORD_HOME}/${MY_PKG_HELPER}"
-	fowners 0:onepassword  "${ONE_PASSWORD_HOME}/${MY_PKG_BROWSER_SUPPORT}"
-	dosym "${ONE_PASSWORD_HOME}/${PN}" /usr/bin/${PN}
+	pax-mark -m "${ED}"/opt/1Password/1password
+	fowners 0:onepassword /opt/1Password/1Password-KeyringHelper
+	fowners 0:onepassword /opt/1Password/1Password-BrowserSupport
+	dosym /opt/1Password/${PN} /usr/bin/${PN}
+}
 
-	fperms +x "${ONE_PASSWORD_HOME}/${PN}"
+pkg_postinst() {
+	chmod 2755 /opt/1Password/1Password-BrowserSupport
+	chmod 6755 /opt/1Password/1Password-KeyringHelper
+	chmod 4755 /opt/1Password/chrome-sandbox
+
+	xdg_desktop_database_update
+	xdg_icon_cache_update
+	xdg_mimeinfo_database_update
+}
+
+pkg_postrm() {
+	xdg_desktop_database_update
+	xdg_icon_cache_update
+	xdg_mimeinfo_database_update
 }
