@@ -3,6 +3,9 @@
 
 EAPI=8
 
+IPCGULL_N="ipcgull"
+IPCGULL_V="0.1"
+
 inherit cmake linux-info
 
 DESCRIPTION="An unofficial userspace driver for HID++ Logitech devices"
@@ -10,9 +13,12 @@ HOMEPAGE="https://github.com/PixlOne/logiops"
 
 if [[ "${PV}" == 9999 ]] ; then
 	inherit git-r3
-	EGIT_REPO_URI="https://github.com/PixlOne/logiops.git"
+	EGIT_REPO_URI="https://github.com/PixlOne/${PN}.git"
 else
-	SRC_URI="https://github.com/PixlOne/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
+	SRC_URI="
+		https://github.com/PixlOne/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz
+		https://github.com/PixlOne/${IPCGULL_N}/archive/refs/tags/v${IPCGULL_V}.tar.gz -> ${IPCGULL_N}-${IPCGULL_V}.tar.gz
+	"
 fi
 
 LICENSE="GPL-3+"
@@ -37,6 +43,16 @@ DOCS=( "README.md" "TESTED.md" )
 pkg_pretend() {
 	local CHECK_CONFIG="~HID_LOGITECH ~HID_LOGITECH_HIDPP ~INPUT_UINPUT"
 	check_extra_config
+}
+
+src_prepare() {
+	default
+
+	if [[ "${PV}" != 9999 ]]; then
+		mv "${WORKDIR}/${IPCGULL_N}-${IPCGULL_V}" "${S}/src/${IPCGULL_N}" || die
+	fi
+
+	cmake_src_prepare
 }
 
 src_install() {
