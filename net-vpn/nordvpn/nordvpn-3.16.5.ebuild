@@ -26,10 +26,6 @@ RDEPEND="
 	net-firewall/iptables
 	sys-apps/iproute2[iptables]
 	sys-process/procps
-	nordlynx? (
-		net-vpn/wireguard-modules
-		net-vpn/wireguard-tools
-	)
 	systemd? (
 		sys-apps/systemd
 	)"
@@ -39,13 +35,15 @@ S="${WORKDIR}"
 QA_PREBUILT="usr/*
 	var/lib/${PN}/*"
 
+pkg_setup() {
+	CONFIG_CHECK="
+		~CONFIG_IP_MULTIPLE_TABLES
+	"
 
-pkg_pretend() {
-	if use nordlynx && kernel_is -ge 5 6; then
-		eerror "You enabled the nordlynx USE-flag and"
-		eerror "have a kernel >= 5.6, so this is not needed"
-		eerror "because the wireguard-modules built into the"
-		eerror "kernel. Please, disable it."
+	if use nordlynx; then
+		CONFIG_CHECK+="
+			~WIREGUARD
+		"
 	fi
 }
 

@@ -48,7 +48,7 @@ RDEPEND="
 	x11-libs/pango
 	!custom-jdk? ( virtual/jdk )"
 
-BUILD_NUMBER="231.9011.35"
+BUILD_NUMBER="232.9559.58"
 
 S="${WORKDIR}/WebStorm-${BUILD_NUMBER}"
 
